@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 void main() {
   runApp(MaterialApp(
     title: 'Lista de tarefas',
@@ -35,21 +34,35 @@ class _HomeState extends State<Home> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: 
-                    TextField(
+                  child: TextField(
                       decoration: InputDecoration(
-                      labelText: 'Nova tarefa',
-                      labelStyle: TextStyle(color: Colors.blueAccent)
-
-                      )
-                    ),
+                          labelText: 'Nova tarefa',
+                          labelStyle: TextStyle(color: Colors.blueAccent))),
                 ),
                 RaisedButton(
                   color: Colors.blueAccent,
                   child: Text('ADD'),
                   textColor: Colors.white,
-                  onPressed: (){},
+                  onPressed: () {},
                 ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(top: 10.0),
+                    itemCount: _toDoList.length,
+                    itemBuilder: (context, index) {
+                      return CheckboxListTile(
+                        title: Text(_toDoList[index]['Titulo']),
+                        value: _toDoList[index]['Ok'],
+                        
+                        secondary: CircleAvatar(
+                          child: Icon(_toDoList[index]['ok'] ? 
+                            Icons.check : Icons.error
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
               ],
             ),
           )
@@ -63,7 +76,7 @@ class _HomeState extends State<Home> {
     return File('${directory.path}/data.json');
   }
 
-   Future<File> _saveData() async {
+  Future<File> _saveData() async {
     String data = json.encode(_toDoList);
 
     final file = await _getFile();
