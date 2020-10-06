@@ -45,25 +45,26 @@ class _HomeState extends State<Home> {
                   textColor: Colors.white,
                   onPressed: () {},
                 ),
-                Expanded(
-                  child: ListView.builder(
-                    padding: EdgeInsets.only(top: 10.0),
-                    itemCount: _toDoList.length,
-                    itemBuilder: (context, index) {
-                      return CheckboxListTile(
-                        title: Text(_toDoList[index]['Titulo']),
-                        value: _toDoList[index]['Ok'],
-                        
-                        secondary: CircleAvatar(
-                          child: Icon(_toDoList[index]['ok'] ? 
-                            Icons.check : Icons.error
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                )
+                
               ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.only(top: 10.0),
+              itemCount: _toDoList.length,
+              itemBuilder: (context, index) {
+                return CheckboxListTile(
+                  title: Text(_toDoList[index]['Titulo']),
+                  value: _toDoList[index]['Ok'],
+                        
+                  secondary: CircleAvatar(
+                  child: Icon(_toDoList[index]['ok'] ? 
+                    Icons.check : Icons.error
+                  ),
+                ),
+              );
+              },
             ),
           )
         ],
