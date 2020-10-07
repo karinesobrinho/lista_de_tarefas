@@ -21,6 +21,16 @@ class _HomeState extends State<Home> {
 
   List _toDoList = [];
 
+  @override
+  void initState() {
+    super.initState();
+    _readData().then((data) {
+      setState(() {
+        _toDoList = jsonDecode(data);
+      });
+    });
+  }
+
   void addToDo() {
     setState(() {
       Map<String, dynamic> newToDo = Map();
@@ -28,6 +38,7 @@ class _HomeState extends State<Home> {
       _toDoController.text = '';
       newToDo['ok'] = false;
       _toDoList.add(newToDo);
+      _saveData();
     });
   }
 
@@ -63,26 +74,40 @@ class _HomeState extends State<Home> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.only(top: 10.0),
-              itemCount: _toDoList.length,
-              itemBuilder: (context, index) {
-                return CheckboxListTile(
-                  title: Text(_toDoList[index]['title']),
-                  value: _toDoList[index]['ok'],
-                  secondary: CircleAvatar(
-                    child: Icon(
-                        _toDoList[index]['ok'] ? Icons.check : Icons.error),
-                  ),
-                  onChanged: (c) {
-                    setState(() {
-                      _toDoList[index]['ok'] = c;
-                    });
-                  },
-                );
-              },
-            ),
+                padding: EdgeInsets.only(top: 10.0),
+                itemCount: _toDoList.length,
+                itemBuilder: buildItem),
           )
         ],
+      ),
+    );
+  }
+
+  Widget buildItem(context, index) {
+    return Dismissible(
+      key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
+      background: Container(
+        color: Colors.red,
+        child: Align(
+          alignment: Alignment(-0.9, 0.0),
+          child: Icon(Icons.delete, color: Colors.white,),
+        ),
+      ),
+      direction: DismissDirection.startToEnd,
+      child: CheckboxListTile(
+        title: Text(_toDoList[index]['title']),
+        value: _toDoList[index]['ok'],
+        secondary: CircleAvatar(
+          child: Icon(
+            _toDoList[index]['ok'] ? Icons.check : Icons.error
+            ),
+        ),
+        onChanged: (c) {
+          setState(() {
+            _toDoList[index]['ok'] = c;
+            _saveData();
+          });
+        },
       ),
     );
   }
@@ -108,3 +133,7 @@ class _HomeState extends State<Home> {
     }
   }
 }
+
+/*
+
+ */
