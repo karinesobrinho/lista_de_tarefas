@@ -44,6 +44,25 @@ class _HomeState extends State<Home> {
     });
   }
 
+  Future<Null> _onRefresh() async {
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      _toDoList.sort((a, b) {
+        if (a['ok'] && !b['ok']) {
+          return 1;
+        } else if (b['ok'] && !a['ok']) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+
+      _saveData();
+    });
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,10 +94,13 @@ class _HomeState extends State<Home> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-                padding: EdgeInsets.only(top: 10.0),
-                itemCount: _toDoList.length,
-                itemBuilder: buildItem),
+            child: RefreshIndicator(
+              child: ListView.builder(
+                  padding: EdgeInsets.only(top: 10.0),
+                  itemCount: _toDoList.length,
+                  itemBuilder: buildItem),
+              onRefresh: _onRefresh,
+            ),
           )
         ],
       ),
@@ -114,10 +136,11 @@ class _HomeState extends State<Home> {
           _lastRemoved = Map.from(_toDoList[index]);
           _lastRemovedPosition = index;
           _toDoList.removeAt(index);
-          
+
           _saveData();
-          
+
           final snack = SnackBar(
+            //barra qua aparece embaixo quando deletemos uma tarefa
             content: Text('Tarefa \'${_lastRemoved['title']}\' deletada'),
             action: SnackBarAction(
                 label: 'Desfazer',
